@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Gimbal Control</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+  <h1>Gimbal Control</h1>
+  <p>Drag the sliders to move the Gimbal Mount</p> 
+</div>
+
+<div class="slidecontainer">
+  <input type="range" min="0" max="255" value="125" class="slider" id="leftright">
+  <p>LeftRight: <span id="leftrightvalue"></span></p>
+</div>
+
+<div class="slidecontainer">
+  <input type="range" min="0" max="255" value="125" class="slider" id="updown" orient="vertical">
+  <p>UpDown: <span id="updownvalue"></span></p>
+</div>
+
+<div class="slidecontainer" id="triggercontainer">
+  <button type="button" class="btn btn-danger btn-lg" aria-pressed="true" id="trigger">Trigger</button>
+</div>
+
+
+<div class="container" id="boxcontainer">
+  <h2 style="text-align:center;">Control Box</h2>
+  <div id="posbox"></div>
+  <p>Co-ords: <span id="coords"></span></p>
+</div>
+
+<script>
+  // Update the value of the text boxes with the slider values in real-time
+  var lrslider = document.getElementById("leftright");
+  var lroutput = document.getElementById("leftrightvalue");
+  var udslider = document.getElementById("updown");
+  var udoutput = document.getElementById("updownvalue");
+  var posbox = document.getElementById("posbox")
+  var coords = document.getElementById("coords")
+
+  // Set the text boxes with the slider value
+  lroutput.innerHTML = lrslider.value;
+  udoutput.innerHTML = udslider.value;
+
+  lrslider.oninput = function() {
+    lroutput.innerHTML = this.value;
+    $.getJSON('/postValues',{
+        left_right: this.value,
+    })
+  }
+  udslider.oninput = function(){
+    udoutput.innerHTML = this.value;
+    $.getJSON('/postValues',{
+        up_down: this.value,
+    })
+  }
+
+  posbox.onmousemove = function(event){
+    xpos = event.clientX - posbox.offsetLeft;
+    ypos = event.clientY - posbox.offsetTop;
+    coords.innerHTML = "X: " + xpos + " Y: " + ypos;
+    udslider.value = ypos;
+    lrslider.value = xpos;
+    udoutput.innerHTML = ypos;
+    lroutput.innerHTML = xpos;
+    $.getJSON('/postValues',{
+        up_down: ypos,
+        left_right: xpos,
+    })
+  }
+
+  posbox.onmouseout = function(){
+    // Set back to the center
+    xpos = 125;
+    ypos = 125;
+    coords.innerHTML = "X: " + xpos + " Y: " + ypos;
+    udslider.value = ypos;
+    lrslider.value = xpos;
+    udoutput.innerHTML = ypos;
+    lroutput.innerHTML = xpos;
+    $.getJSON('/postValues',{
+        up_down: ypos,
+        left_right: xpos,
+    })
+  }
+
+  posbox.onclick = function(event){
+    $.getJSON('/postValues',{
+       click:"YES", 
+    })
+  }
+
+  trigger.onclick = function(event){
+    $.getJSON('/postValues',{
+        click:"YES",
+    })
+  }
+</script>
+
+</body>
+</html>

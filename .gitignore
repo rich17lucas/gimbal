@@ -1,0 +1,4 @@
+*.gz
+/venv
+/venvlin
+/.vscode
