@@ -3,3 +3,4 @@
 /venvlin
 /.vscode+
 *.log
+__pycache__/*
