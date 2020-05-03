@@ -1,4 +1,5 @@
 *.gz
 /venv
 /venvlin
-/.vscode
+/.vscode+
+*.log

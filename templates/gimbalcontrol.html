@@ -18,12 +18,12 @@
 </div>
 
 <div class="slidecontainer">
-  <input type="range" min="0" max="255" value="125" class="slider" id="leftright">
+  <input type="range" min="0" max="180" value="90" class="slider" id="leftright">
   <p>LeftRight: <span id="leftrightvalue"></span></p>
 </div>
 
 <div class="slidecontainer">
-  <input type="range" min="0" max="255" value="125" class="slider" id="updown" orient="vertical">
+  <input type="range" min="55" max="120" value="90" class="slider" id="updown" orient="vertical">
   <p>UpDown: <span id="updownvalue"></span></p>
 </div>
 
@@ -80,8 +80,8 @@
 
   posbox.onmouseout = function(){
     // Set back to the center
-    xpos = 125;
-    ypos = 125;
+    xpos = 90;
+    ypos = 90;
     coords.innerHTML = "X: " + xpos + " Y: " + ypos;
     udslider.value = ypos;
     lrslider.value = xpos;
