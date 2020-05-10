@@ -23,40 +23,42 @@ pz.setOutputConfig(tilt, 2)
 pz.setOutputConfig(click, 2)
 
 sc_logger.info("Centre all servos")
-panVal = 90
-tiltVal = 90
-clickVal = 90
-pz.setOutput (pan, panVal)
-pz.setOutput (tilt, tiltVal)
-pz.setOutput (click, clickVal)
+pan_val = 90
+tilt_val = 90
+click_val = 90
+pz.setOutput(pan, pan_val)
+pz.setOutput(tilt, tilt_val)
+pz.setOutput(click, click_val)
 
 sc_logger.debug("Initialising BoxController")
 bc = BoxController()
 
 def set_servo(pos):
-    
+    '''
+    Sets the position of the servo
+    '''
     try:
-        panVal = int(bc.convert_pan(int(pos.get('left_right'))))
-        sc_logger.debug(f'panVal {panVal}')
-        pz.setOutput(pan, panVal)
-    except TypeError:
-        pass
-    except Exception as error:
-        sc_logger.error(error)
-    
-    try:
-        tiltVal = int(bc.convert_tilt(int(pos.get('up_down'))))
-        sc_logger.debug(f"tiltval: {tiltVal}")
-        pz.setOutput(tilt, tiltVal)
+        pan_val = int(bc.convert_pan(int(pos.get('left_right'))))
+        sc_logger.debug(f'panVal {pan_val}')
+        pz.setOutput(pan, pan_val)
     except TypeError:
         pass
     except Exception as error:
         sc_logger.error(error)
 
     try:
-        clickVal = pos.get('click')
-        sc_logger.debug(f"clickVal: {clickVal}")
-        if clickVal == 'YES':
+        tilt_val = int(bc.convert_tilt(int(pos.get('up_down'))))
+        sc_logger.debug(f"tiltval: {tilt_val}")
+        pz.setOutput(tilt, tilt_val)
+    except TypeError:
+        pass
+    except Exception as error:
+        sc_logger.error(error)
+
+    try:
+        click_val = pos.get('click')
+        sc_logger.debug(f"clickVal: {click_val}")
+        if click_val == 'YES':
             pz.setOutput(click, 55)
             time.sleep(0.5)
             pz.setOutput(click, 90)
