@@ -8,7 +8,7 @@ if "RPI" in socket.gethostname().upper():
 
 def configure_logging():
     """ Configures the logging for this application"""
-    logging.basicConfig(level=logging.INFO, 
+    logging.basicConfig(level=logging.DEBUG, 
                         format='%(asctime)s %(name)s %(levelname)s %(message)s',
                         filename='app.log',
                         filemode='w')
@@ -37,16 +37,16 @@ def post_values():
     up_down = request.args.get('up_down') #if request.args.get('up_down') else None
     click = request.args.get('click')
 
-    logging.debug(f"left_right: {left_right}")
-    logging.debug(f"up_down: {up_down}")
-    logging.debug(f"click: {click}")
+    #logging.debug(f"left_right: {left_right}")
+    #logging.debug(f"up_down: {up_down}")
+    #logging.debug(f"click: {click}")
 
     servo_positions = {'left_right':left_right,
                        'up_down':up_down, 
                        'click':click
                        }
     
-    logging.debug(servo_positions)
+    #logging.debug(servo_positions)
     sc.set_servo(servo_positions)
 
     return json.dumps({'status':'OK'})

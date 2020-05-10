@@ -1,9 +1,13 @@
-from libs.piconzero import piconzero as pz 
+"""
+Module for controlling the servos via the piconzero library
+"""
 import time
 import logging
+from libs.piconzero import piconzero as pz 
+from libs.servocontrol.boxcontroller import BoxController
+
 
 sc_logger = logging.getLogger(__name__)
-
 sc_logger.info("Setting up servo pins")
 # Define which pins are the servos
 pan = 1
@@ -26,11 +30,13 @@ pz.setOutput (pan, panVal)
 pz.setOutput (tilt, tiltVal)
 pz.setOutput (click, clickVal)
 
+sc_logger.debug("Initialising BoxController")
+bc = BoxController()
 
 def set_servo(pos):
     
     try:
-        panVal = int(pos.get('left_right'))
+        panVal = int(bc.convert_pan(int(pos.get('left_right'))))
         sc_logger.debug(f'panVal {panVal}')
         pz.setOutput(pan, panVal)
     except TypeError:
@@ -39,7 +45,7 @@ def set_servo(pos):
         sc_logger.error(error)
     
     try:
-        tiltVal = int(pos.get('up_down'))
+        tiltVal = int(bc.convert_tilt(int(pos.get('up_down'))))
         sc_logger.debug(f"tiltval: {tiltVal}")
         pz.setOutput(tilt, tiltVal)
     except TypeError:
