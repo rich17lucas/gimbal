@@ -32,7 +32,7 @@ def gimbalcontrol():
 
 @app.route('/postValues')
 def post_values():
- 
+    
     left_right = request.args.get('left_right') # if request.args.get('left_right') else None
     up_down = request.args.get('up_down') #if request.args.get('up_down') else None
     click = request.args.get('click')
@@ -42,10 +42,11 @@ def post_values():
     #logging.debug(f"click: {click}")
 
     servo_positions = {'left_right':left_right,
-                       'up_down':up_down, 
-                       'click':click
-                       }
+                    'up_down':up_down, 
+                    'click':click
+                    }
     
+    print(servo_positions)
     #logging.debug(servo_positions)
     sc.set_servo(servo_positions)
 

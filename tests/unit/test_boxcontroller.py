@@ -20,22 +20,22 @@ class TestControlBox:
         Testing the min pan value is 0
         """
         #box_controller = BoxController()
-        assert self.box_controller.convert_pan(0) == 0
+        assert self.box_controller.convert_pan(-127) == 0
 
     def test_max_pan(self):
         """
         Test that the max pan is 180
         """
-        assert self.box_controller.convert_pan(255) == 180
+        assert self.box_controller.convert_pan(127) == 180
 
     def test_mid_pan(self):
-        assert self.box_controller.convert_pan(128) == 90
+        assert self.box_controller.convert_pan(0) == 90
 
-    def test_negative_pan(self):
+    def test_too_low_pan(self):
         """
         Testing the min pan value is 0
         """
-        assert self.box_controller.convert_pan(-1) == 0
+        assert self.box_controller.convert_pan(-127) == 0
 
     def test_too_high_pan(self):
         """
@@ -47,16 +47,16 @@ class TestControlBox:
         """
         Testing the min pan value is 55
         """
-        assert self.box_controller.convert_tilt(0) == 55
+        assert self.box_controller.convert_tilt(-127) == 55
 
     def test_max_tilt(self):
         """
         Testing the max pan value is 120
         """
-        assert self.box_controller.convert_tilt(255) == 120
+        assert self.box_controller.convert_tilt(127) == 120
 
-    def text_negative_tilt(self):
+    def test_too_low_tilt(self):
         """
         Testing that the system replaces negative values
         """
-        assert self.box_controller.convert_tilt(-1) == 0
+        assert self.box_controller.convert_tilt(-200) == 55

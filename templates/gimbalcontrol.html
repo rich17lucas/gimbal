@@ -3,7 +3,7 @@
 <head>
   <title>Gimbal Control</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="/static/css/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -14,90 +14,129 @@
 
 <div class="jumbotron text-center">
   <h1>Gimbal Control</h1>
-  <p>Drag the sliders to move the Gimbal Mount</p> 
+  <p>Drag the ball to move the gimbal up or down</p> 
 </div>
 
-<div class="slidecontainer">
-  <input type="range" min="0" max="255" value="90" class="slider" id="leftright">
-  <p>LeftRight: <span id="leftrightvalue"></span></p>
-</div>
-
-<div class="slidecontainer">
-  <input type="range" min="0" max="255" value="90" class="slider" id="updown" orient="vertical">
-  <p>UpDown: <span id="updownvalue"></span></p>
-</div>
-
-<div class="slidecontainer" id="triggercontainer">
+<div id="triggercontainer">
   <button type="button" class="btn btn-danger btn-lg" aria-pressed="true" id="trigger">Trigger</button>
 </div>
 
-
-<div class="container" id="boxcontainer">
+<div id="container">
   <h2 style="text-align:center;">Control Box</h2>
-  <div id="posbox"></div>
+  <div id="posbox">
+    <div id="ball">
+
+    </div>
+  </div>
   <p>Co-ords: <span id="coords"></span></p>
 </div>
 
 <script>
   // Update the value of the text boxes with the slider values in real-time
-  var lrslider = document.getElementById("leftright");
-  var lroutput = document.getElementById("leftrightvalue");
-  var udslider = document.getElementById("updown");
-  var udoutput = document.getElementById("updownvalue");
-  var posbox = document.getElementById("posbox")
-  var coords = document.getElementById("coords")
+  // var lrslider = document.getElementById("leftright");
+  // var lroutput = document.getElementById("leftrightvalue");
+  // var udslider = document.getElementById("updown");
+  // var udoutput = document.getElementById("updownvalue");
+  //var posbox = document.getElementById("posbox")
+  //var coords = document.getElementById("coords")
+  
+  // posbox.onmousemove = function(event){
+  //   xpos = event.clientX - posbox.offsetLeft;
+  //   ypos = event.clientY - posbox.offsetTop;
+  //   coords.innerHTML = "X: " + xpos + " Y: " + ypos;
+  //   $.getJSON('/postValues',{
+  //       up_down: ypos,
+  //       left_right: xpos,
+  //   })
+  // }
 
-  // Set the text boxes with the slider value
-  lroutput.innerHTML = lrslider.value;
-  udoutput.innerHTML = udslider.value;
+  // posbox.onmouseout = function(){
+  //   // Set back to the center
+  //   xpos = 90;
+  //   ypos = 90;
+  //   coords.innerHTML = "X: " + xpos + " Y: " + ypos;
+  //   udslider.value = ypos;
+  //   lrslider.value = xpos;
+  //   udoutput.innerHTML = ypos;
+  //   lroutput.innerHTML = xpos;
+  //   $.getJSON('/postValues',{
+  //       up_down: ypos,
+  //       left_right: xpos,
+  //   })
+  // }
 
-  lrslider.oninput = function() {
-    lroutput.innerHTML = this.value;
-    $.getJSON('/postValues',{
-        left_right: this.value,
-    })
-  }
-  udslider.oninput = function(){
-    udoutput.innerHTML = this.value;
-    $.getJSON('/postValues',{
-        up_down: this.value,
-    })
+  var dragItem = document.querySelector("#ball");
+  var container = document.querySelector("#posbox");
+
+  var active = false;
+  var currentX;
+  var currentY;
+  var initialX;
+  var initialY;
+  var xOffset = 0;
+  var yOffset = 0;
+
+  container.addEventListener("touchstart", dragStart, false);
+  container.addEventListener("touchend", dragEnd, false);
+  container.addEventListener("touchmove", drag, false);
+  container.addEventListener("mousedown", dragStart, false);
+  container.addEventListener("mouseup", dragEnd, false);
+  container.addEventListener("mousemove", drag, false);
+
+  function dragStart(e) {
+    if (e.type === "touchstart") {
+      initialX = e.touches[0].clientX - xOffset;
+      initialY = e.touches[0].clientY - yOffset;
+    } else {
+      initialX = e.clientX - xOffset;
+      initialY = e.clientY - yOffset;
+    }
+
+    if (e.target === dragItem) {
+      active = true;
+    }
   }
 
-  posbox.onmousemove = function(event){
-    xpos = event.clientX - posbox.offsetLeft;
-    ypos = event.clientY - posbox.offsetTop;
-    coords.innerHTML = "X: " + xpos + " Y: " + ypos;
-    udslider.value = ypos;
-    lrslider.value = xpos;
-    udoutput.innerHTML = ypos;
-    lroutput.innerHTML = xpos;
-    $.getJSON('/postValues',{
-        up_down: ypos,
-        left_right: xpos,
-    })
+  function dragEnd(e) {
+    initialX = currentX;
+    initialY = currentY;
+    active = false;
   }
 
-  posbox.onmouseout = function(){
-    // Set back to the center
-    xpos = 90;
-    ypos = 90;
-    coords.innerHTML = "X: " + xpos + " Y: " + ypos;
-    udslider.value = ypos;
-    lrslider.value = xpos;
-    udoutput.innerHTML = ypos;
-    lroutput.innerHTML = xpos;
-    $.getJSON('/postValues',{
-        up_down: ypos,
-        left_right: xpos,
-    })
+  function drag(e) {
+    if (active) {
+      e.preventDefault();
+ 
+      if (e.type === "touchmove") {
+        currentX = e.touches[0].clientX - initialX;
+        currentY = e.touches[0].clientY - initialY;
+      } else {
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+      }
+
+      xOffset = currentX;
+      yOffset = currentY;
+      
+      coords.innerHTML = "X: " + xOffset + " Y: " + yOffset;
+
+      setTranslate(currentX, currentY, dragItem);
+      $.getJSON('/postValues',{
+         up_down: currentY,
+         left_right: currentX,
+      })
+    }
+  }
+    
+  function setTranslate(xPos, yPos, el) {
+    el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
   }
 
-  posbox.onclick = function(event){
-    $.getJSON('/postValues',{
-       click:"YES", 
-    })
-  }
+  // posbox.onclick = function(event){
+  //   $.getJSON('/postValues',{
+  //      click:"YES", 
+  //   })
+  // }
 
   trigger.onclick = function(event){
     $.getJSON('/postValues',{

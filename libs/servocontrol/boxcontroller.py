@@ -18,8 +18,8 @@ class BoxController:
     min_pan = 0     # The minimum position of the pan servo
     max_pan = 180   # The maximum position of hte pan servo
 
-    max_controlbox = 255    # The maximum value that could be returned by the controlbox
-    min_controlbox = 0      # The minimum value that could be returned by the controlbox
+    max_controlbox = 127    # The maximum value that could be returned by the controlbox
+    min_controlbox = -127      # The minimum value that could be returned by the controlbox
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -29,8 +29,8 @@ class BoxController:
         """
         Convert the pan value into a range between min_ and max_pan
         """
-        new_pan = (pan * BoxController.max_pan / BoxController.max_controlbox) + BoxController.min_pan
-
+        #new_pan = (pan * BoxController.max_pan / (BoxController.max_controlbox + 127)) + BoxController.min_pan
+        new_pan = (pan * BoxController.max_pan / (BoxController.max_controlbox + 127)) + 90
         # Ensure that value is within permitted range.
         new_pan = BoxController.max_pan if new_pan > BoxController.max_pan else new_pan
         new_pan = BoxController.min_pan if new_pan < BoxController.min_pan else new_pan
@@ -43,11 +43,11 @@ class BoxController:
         """
         Convert the tilt value into a range between min_ and max_pan
         """
-        new_tilt = (tilt * BoxController.max_tilt / BoxController.max_controlbox) + BoxController.min_tilt
-
+        #new_tilt = (tilt * BoxController.max_tilt / (BoxController.max_controlbox + 127)) + BoxController.min_tilt + 127
+        new_tilt = (tilt * BoxController.max_tilt / (BoxController.max_controlbox + 127)) + 60
         # Esnure that value is within permitted range.
         new_tilt = BoxController.max_tilt if new_tilt > BoxController.max_tilt else new_tilt
         new_tilt = BoxController.min_tilt if new_tilt < BoxController.min_tilt else new_tilt
 
         self.logger.debug(f"Input tilt {tilt} converted to {new_tilt}")
-        return new_tilt
+        return int(new_tilt)
